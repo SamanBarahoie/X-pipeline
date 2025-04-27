@@ -1,6 +1,66 @@
 pipline/
-__pycache__/
-*.pyc
-.idea/
 airflow/logs
 kafka/twitter_credentials.json
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+dist/
+build/
+pip-wheel-metadata/
+
+# Virtual Environments
+env/
+venv/
+ENV/
+VENV/
+*.env
+*.venv
+
+# IDEs
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Kafka Logs
+*.log
+*.pid
+
+# Docker
+*.dockerfile
+docker-compose.override.yml
+.dockerignore
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Test outputs
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# Airflow
+airflow.cfg
+airflow.db
+logs/
+
+# PostgreSQL Dump Files
+*.sql
+*.dump
+
+# Kafka Topics Backups
+kafka-backups/
+
+# Misc
+*.bak
+*.swp
+*.tmp
