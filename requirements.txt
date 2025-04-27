@@ -1,0 +1,7 @@
+apache-airflow
+airbyte-protocol
+dbt-core
+metabase-api
+psycopg2-binary
+tweepy
+pandas
