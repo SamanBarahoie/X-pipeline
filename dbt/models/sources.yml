@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: twitter_etl
+    schema: public
+    tables:
+      - name: tweets
+        description: "Table containing tweets data"

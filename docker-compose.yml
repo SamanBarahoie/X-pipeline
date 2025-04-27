@@ -124,7 +124,22 @@ services:
       - postgres
     networks:
       - etl_net
-
+  # -------------------------------
+  # dbt (Transformation Layer)
+  # -------------------------------
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:latest
+    container_name: dbt
+    depends_on:
+      - postgres
+    volumes:
+      - ./dbt:/dbt
+    working_dir: /dbt
+    environment:
+      - DBT_PROFILES_DIR=/dbt
+    command: run
+    networks:
+      - etl_net
 # -------------------------------
 # Volumes & Networks
 # -------------------------------

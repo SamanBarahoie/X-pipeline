@@ -1,1 +1,11 @@
-// profiles.yml placeholder
+twitter_etl:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres
+      user: twitter
+      password: twitterpass
+      dbname: twitter_etl
+      schema: public
+      port: 5432

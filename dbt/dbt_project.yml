@@ -1,1 +1,19 @@
-// dbt_project.yml placeholder
+name: 'twitter_etl'
+version: '1.0'
+config-version: 2
+
+profile: 'twitter_etl'
+
+
+source-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+
+models:
+  twitter_etl:
+    +materialized: table
+
