@@ -1,3 +1,6 @@
-venv/
+pipline/
 __pycache__/
 *.pyc
+.idea/
+airflow/logs
+kafka/twitter_credentials.json

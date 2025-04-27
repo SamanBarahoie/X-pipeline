@@ -1,1 +1,136 @@
-// docker-compose.yml placeholder
+services:
+  # -------------------------------
+  # PostgreSQL (Staging + Analytics)
+  # -------------------------------
+  postgres:
+    image: postgres:13
+    container_name: twitter_etl_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: twitter
+      POSTGRES_PASSWORD: twitterpass
+      POSTGRES_DB: twitter_etl
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - etl_net
+
+  # -------------------------------
+  # Kafka (Message Broker)
+  # -------------------------------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - etl_net
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - etl_net
+
+  # -------------------------------
+  # Producer Service
+  # -------------------------------
+  producer:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile_producer
+    container_name: producer
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_SERVER: "kafka:9092"
+    networks:
+      - etl_net
+
+  # -------------------------------
+  # Consumer Service
+  # -------------------------------
+  consumer:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile_consumer
+    container_name: consumer
+    depends_on:
+      - kafka
+      - postgres
+    environment:
+      POSTGRES_HOST: "postgres"
+      KAFKA_SERVER: "kafka:9092"
+    networks:
+      - etl_net
+  # -------------------------------
+  # Apache Airflow (Orchestration)
+  # -------------------------------
+  airflow:
+    image: apache/airflow:2.7.3
+    container_name: airflow
+    restart: always
+    depends_on:
+      - postgres
+      - kafka
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://twitter:twitterpass@postgres/twitter_etl
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "airflow db upgrade &&
+               airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+               airflow scheduler & airflow webserver && pip install kafka-python pymongo"
+    networks:
+      - etl_net
+
+  # -------------------------------
+  # Metabase (Visualization)
+  # -------------------------------
+  metabase:
+    image: metabase/metabase:latest
+    container_name: metabase
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: twitter_etl
+      MB_DB_PORT: 5432
+      MB_DB_USER: twitter
+      MB_DB_PASS: twitterpass
+      MB_DB_HOST: postgres
+    depends_on:
+      - postgres
+    networks:
+      - etl_net
+
+# -------------------------------
+# Volumes & Networks
+# -------------------------------
+volumes:
+  postgres_data:
+
+networks:
+  etl_net:
+    driver: bridge
