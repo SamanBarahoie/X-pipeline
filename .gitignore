@@ -54,7 +54,7 @@ airflow.db
 logs/
 
 # PostgreSQL Dump Files
-*.sql
+
 *.dump
 
 # Kafka Topics Backups
