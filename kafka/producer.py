@@ -109,7 +109,7 @@ def main():
     global producer
     keyword = "news"
     while True:
-        tweets = fetch_tweets(keyword,count=11)
+        tweets = fetch_tweets(keyword,count=44)
         if tweets:
             for tweet in tweets:
                 try:
