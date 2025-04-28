@@ -1,0 +1,1 @@
+{"_invocation_id": "a2cd8970-2fac-42d0-a5f9-4f0f6829c340", "linked": {"0": {"name": "source.twitter_etl.twitter_etl.tweets", "type": "source", "succ": [1]}, "1": {"name": "model.twitter_etl.stg_twitter_data", "type": "model", "succ": [2]}, "2": {"name": "model.twitter_etl.mart_tweet_count_per_hour", "type": "model"}}}
