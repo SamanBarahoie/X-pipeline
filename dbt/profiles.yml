@@ -3,7 +3,7 @@ twitter_etl:
   outputs:
     dev:
       type: postgres
-      host: postgres
+      host: twitter_etl_postgres
       user: twitter
       password: twitterpass
       dbname: twitter_etl

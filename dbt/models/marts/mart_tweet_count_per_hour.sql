@@ -1,4 +1,3 @@
-
 {{ config(materialized='table') }}
 
 WITH tweet_counts AS (
@@ -14,4 +13,4 @@ SELECT
     tweet_hour,
     tweet_count
 FROM tweet_counts
-ORDER BY tweet_hour;
+-- ORDER BY tweet_hour;  -- deleted
